@@ -1,54 +1,9 @@
-var ArduinoTemplate = "";
-ArduinoTemplate += "#include &lt;LiquidCrystal.h&gt;\n";
-ArduinoTemplate += "\n";
-ArduinoTemplate += "LiquidCrystal lcd(12, 11, 5, 4, 3, 2); // RS, E, D4, D5, D6, D7\n";
-ArduinoTemplate += "\n";
-ArduinoTemplate += "byte customChar[] = {\n";
-ArduinoTemplate += "  {DataX0},\n";
-ArduinoTemplate += "  {DataX1},\n";
-ArduinoTemplate += "  {DataX2},\n";
-ArduinoTemplate += "  {DataX3},\n";
-ArduinoTemplate += "  {DataX4},\n";
-ArduinoTemplate += "  {DataX5},\n";
-ArduinoTemplate += "  {DataX6},\n";
-ArduinoTemplate += "  {DataX7}\n";
-ArduinoTemplate += "};\n";
-ArduinoTemplate += "\n";
-ArduinoTemplate += "void setup() {\n";
-ArduinoTemplate += "  lcd.begin(16, 2);\n";
-ArduinoTemplate += "  lcd.createChar(0, customChar);\n";
-ArduinoTemplate += "  lcd.home();\n";
-ArduinoTemplate += "  lcd.write(0);\n";
-ArduinoTemplate += "}\n";
-ArduinoTemplate += "\n";
-ArduinoTemplate += "void loop() { }";
-
-var ArduinoI2CTemplate = "";
-ArduinoI2CTemplate += "#include &lt;Wire.h&gt;\n";
-ArduinoI2CTemplate += "#include &lt;LiquidCrystal_I2C.h&gt;\n";
-ArduinoI2CTemplate += "\n";
-ArduinoI2CTemplate += "// Set the LCD address to 0x27 in PCF8574 by NXP and Set to 0x3F in PCF8574A by Ti\n";
-ArduinoI2CTemplate += "LiquidCrystal_I2C lcd(0x3F, 16, 2);\n";
-ArduinoI2CTemplate += "\n";
-ArduinoI2CTemplate += "byte customChar[] = {\n";
-ArduinoI2CTemplate += "  {DataX0},\n";
-ArduinoI2CTemplate += "  {DataX1},\n";
-ArduinoI2CTemplate += "  {DataX2},\n";
-ArduinoI2CTemplate += "  {DataX3},\n";
-ArduinoI2CTemplate += "  {DataX4},\n";
-ArduinoI2CTemplate += "  {DataX5},\n";
-ArduinoI2CTemplate += "  {DataX6},\n";
-ArduinoI2CTemplate += "  {DataX7}\n";
-ArduinoI2CTemplate += "};\n";
-ArduinoI2CTemplate += "\n";
-ArduinoI2CTemplate += "void setup() {\n";
-ArduinoI2CTemplate += "  lcd.begin();\n";
-ArduinoI2CTemplate += "  lcd.createChar(0, customChar);\n";
-ArduinoI2CTemplate += "  lcd.home();\n";
-ArduinoI2CTemplate += "  lcd.write(0);\n";
-ArduinoI2CTemplate += "}\n";
-ArduinoI2CTemplate += "\n";
-ArduinoI2CTemplate += "void loop() { }";
+var codeTemplate = "";
+codeTemplate += "#include &lt;unistd.h&gt;\n";
+codeTemplate += "\n";
+codeTemplate += "uint8_t customChar[] = {\n";
+codeTemplate += "  {DataX0}, {DataX1}, {DataX2}, {DataX3}, {DataX4}\n";
+codeTemplate += "};\n";
 
 function binaryToHex(s) {
     var i, k, part, accum, ret = '';
@@ -97,19 +52,16 @@ reloadData = function() {
 		var BinStr="";
 		for (var x=0;x<=7;x++) {
 			if ($(".dot-px[data-x='" + x + "'][data-y='" + y + "']").attr("class").indexOf("high")>=0) {
-				BinStr += "1";
+				BinStr = "1" + BinStr;
 			} else {
-				BinStr += "0";
+				BinStr = "0" + BinStr;
 			}
 		}
-		Data[x] = type == "hex" ? "0x" + binaryToHex(BinStr)['result'] : "B" + BinStr;
+		Data[y] = type == "hex" ? "0x" + binaryToHex(BinStr)['result'] : "B" + BinStr;
 	}
-	var interfacing;
-	$("[name='interfacing']").each(function(index, element) {
-        if ($(this).is(":checked")) interfacing = $(this).val();
-    });
-	var html= interfacing == "parallel" ? ArduinoTemplate : ArduinoI2CTemplate;
-	for (var i=0;i<=7;i++) {
+
+	var html= codeTemplate;
+	for (var i=0;i<=4;i++) {
 		html = html.replace("{DataX" + i + "}", Data[i]);
 	}
 	$("#code-box").html(html);
