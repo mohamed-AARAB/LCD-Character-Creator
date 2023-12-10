@@ -93,9 +93,9 @@ reloadData = function() {
         if ($(this).is(":checked")) type = $(this).val();
     });
 	var Data = [];
-	for (var x=0;x<=7;x++) {
+	for (var y=0;y<=4;y++) {
 		var BinStr="";
-		for (var y=0;y<=4;y++) {
+		for (var x=0;x<=7;x++) {
 			if ($(".dot-px[data-x='" + x + "'][data-y='" + y + "']").attr("class").indexOf("high")>=0) {
 				BinStr += "1";
 			} else {
